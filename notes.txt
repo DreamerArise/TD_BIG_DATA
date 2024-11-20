@@ -1,0 +1,29 @@
+COURS SE NOTES
+
+CHAPITRE 1 : Introduction aux Systèmes d’Exploitation
+Generalites sur les Systèmes d'Exploitation
+
+Structuration et Rôles des SE
+Explication du schéma
+Ce schéma résume parfaitement le rôle d’un système d’exploitation.
+
+C’est quoi un système d’exploitation ?
+
+C'est un programme qui va permettre à un utilisateur (toute entité voulant exploiter le matériel d’un ordinateur,d’un matériel ou de n’importe quel périphérique) de pouvoir exploiter les ressources matérielles et logicielles d’un ordinateur.
+Un programme est utilisateur, un humain est un utilisateur.
+Exploiter les ressources d’une machine qu’entends t-on par ressources :( disque dur,processeur,clé USB) périphériques.
+Donc le système d’exploitation c’est juste ce programme central qui va permettre l’exploitation d’une machine.
+
+Dans ce schéma on a ce qu’on appelle en haut les programmes systèmes et les programmes utilisateurs. 
+
+C’est quoi un programme système?
+
+Ce sont des programmes qui viennent avec le système on les trouve la bas. On peut installer windows en y trouvant pas mal de programmes(notepad, internet explorer…).
+
+C’est quoi un programme utilisateur?
+
+Ce sont des programmes que l'utilisateur lui-même a installé(chrome,sublim text…).
+
+On a les applications utilisateurs comme systèmes qui veulent exploiter le matériel, le périphérique physique. Donc ils doivent passer par le système d’exploitation.
+Le SE va utiliser le langage machine(une suite d'instructions compose uniquement de 0 et 1), donner des instructions machines au processeur qui est le cerveau de l’ordinateur.Le processeur est l'élément central de l’ordinateur, c’est l’unique entité qui peut donner des ordres , qui peut effectuer des tâches , qui peut effectuer le traitement. Tout programme que vous lancez va solliciter le processeur, tout programme en cours d'exécution appelé processus pourra bénéficier du processeur car c’est l’unique entité pouvant interpréter des instructions machines.
+Le SE va prendre ces instructions l’envoyer au processeur d'où Micro-architecture.

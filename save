@@ -1,0 +1,106 @@
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
+
+public class TFIDFCalculator {
+
+    public static void main(String[] args) {
+        String directoryPath = "D:/BigData"; // Remplacez par le chemin de votre répertoire
+        try {
+            // Calculer la fréquence des termes pour chaque document
+            Map<String, Map<String, Integer>> termFrequencies = calculateTermFrequencies(directoryPath);
+            // Calculer l'IDF pour chaque terme
+            Map<String, Double> idfScores = calculateInverseDocumentFrequency(termFrequencies);
+            // Calculer le score TF-IDF
+            Map<String, Map<String, Double>> tfidfScores = calculateTFIDF(termFrequencies, idfScores);
+
+            // Afficher les résultats
+            for (String doc : tfidfScores.keySet()) {
+                //System.out.println("Document: " + doc);
+                System.out.println("Lecture du fichier: " + doc);
+
+                for (Map.Entry<String, Double> entry : tfidfScores.get(doc).entrySet()) {
+                    System.out.println("  " + entry.getKey() + ": " + entry.getValue());
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private static Map<String, Map<String, Integer>> calculateTermFrequencies(String directoryPath) throws IOException {
+        Map<String, Map<String, Integer>> termFrequencies = new HashMap<>();
+        File dir = new File(directoryPath);
+        File[] files = dir.listFiles((d, name) -> name.endsWith(".txt")); // Filtrer les fichiers .txt
+
+        if (files != null) {
+            for (File file : files) {
+                Map<String, Integer> termFrequency = new HashMap<>();
+                int totalWords = 0;
+
+                try (BufferedReader br = new BufferedReader(new FileReader(file))) {
+                    String line;
+                    while ((line = br.readLine()) != null) {
+                        String[] words = line.toLowerCase().split("\\W+"); // Séparer les mots
+                        for (String word : words) {
+                            if (!word.isEmpty()) {
+                                termFrequency.put(word, termFrequency.getOrDefault(word, 0) + 1);
+                                totalWords++;
+                            }
+                        }
+                    }
+                }
+
+                // Normaliser les fréquences par le nombre total de mots
+                for (Map.Entry<String, Integer> entry : termFrequency.entrySet()) {
+                    entry.setValue((int) ((double) entry.getValue() / totalWords * 100)); // Fréquence relative
+                }
+
+                termFrequencies.put(file.getName(), termFrequency);
+            }
+        }
+
+        return termFrequencies;
+    }
+
+    private static Map<String, Double> calculateInverseDocumentFrequency(Map<String, Map<String, Integer>> termFrequencies) {
+        Map<String, Double> idfScores = new HashMap<>();
+        int totalDocuments = termFrequencies.size();
+
+        for (Map<String, Integer> termFrequency : termFrequencies.values()) {
+            for (String term : termFrequency.keySet()) {
+                idfScores.put(term, idfScores.getOrDefault(term, 0.0) + 1);
+            }
+        }
+
+        // Calculer l'IDF
+        for (String term : idfScores.keySet()) {
+            idfScores.put(term, Math.log(totalDocuments / (1 + idfScores.get(term))));
+        }
+
+        return idfScores;
+    }
+
+    private static Map<String, Map<String, Double>> calculateTFIDF(Map<String, Map<String, Integer>> termFrequencies, Map<String, Double> idfScores) {
+        Map<String, Map<String, Double>> tfidfScores = new HashMap<>();
+
+        for (String doc : termFrequencies.keySet()) {
+            Map<String, Integer> termFrequency = termFrequencies.get(doc);
+            Map<String, Double> tfidfForDoc = new HashMap<>();
+
+            for (String term : termFrequency.keySet()) {
+                double tf = termFrequency.get(term);
+                double idf = idfScores.get(term);
+                tfidfForDoc.put(term, tf * idf);
+            }
+
+            tfidfScores.put(doc, tfidfForDoc);
+        }
+
+        return tfidfScores;
+
+    }
+}
